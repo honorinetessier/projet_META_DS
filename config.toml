@@ -1,5 +1,5 @@
 [data]
-data_file = "data/donnees_didactique.csv"
+data_file = "data/instance5_haute_dim.csv"
 k = 5 # nombre de clusters
 
 [sa]

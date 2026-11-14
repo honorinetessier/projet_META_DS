@@ -1,6 +1,6 @@
 [data]
-data_file = "data/instance5_haute_dim.csv"
-k = 5 # nombre de clusters
+data_file = "data/donnees_didactique.csv"
+k = 6 # nombre de clusters
 
 [sa]
 n_iter = 50000 # budget total d’iterations par run

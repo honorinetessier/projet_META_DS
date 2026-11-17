@@ -1,4 +1,3 @@
-using Random 
 using DelimitedFiles
 using TOML
 using Plots 
@@ -102,36 +101,196 @@ function baseline_cyclique(k::Int,n::Int)
 end 
 
 
+#générer un voisin 
+function voisin(z::Vector{Int},cpt_cluster::Vector{Int},k::Int, n::Int)
+    x_random = rand(1:n)
+    cluster_random = rand(1:k)
+    while cluster_random == z[x_random] || cpt_cluster[z[x_random]] <= 1
+        x_random = rand(1:n)
+        cluster_random = rand(1:k)
+    end
+    return x_random, cluster_random
+end 
+
+
+function metropolis(I::Float64,I_voisin::Float64,T::Float64)
+    deltaI = I_voisin - I
+    if deltaI <= 0 
+        return 1
+    else
+        return exp(-deltaI / T)
+    end
+end 
+
+
 #calibrage de T0 si T0_auto est TRUE sinon utilise T_init 
-function calibrer_T0(X::Matrix{Float64}, z::Vector{Int}, k::Int, taux_cible::Float64; rng::Random.AbstractRNG = Random.default_rng())
-    #TODO 
+function calibrer_T0(X::Matrix{Float64},z::Vector{Int}, k::Int, taux_cible::Float64, cpt_cluster::Vector{Int},n::Int,d::Int)
+    centroides = calculer_centroides(X,z,k,d,n,cpt_cluster)
+    I = calculer_inertie(X,z,centroides,n,d)
+    somme = 0.0
+    cpt = 0
+
+    for i in 1:500
+        x_random,cluster_random = voisin(z,cpt_cluster,k,n)
+        ancien_cluster=z[x_random]
+        z_voisin=copy(z)
+        cpt_cluster_voisin = copy(cpt_cluster)
+        z_voisin[x_random] = cluster_random
+        cpt_cluster_voisin[ancien_cluster] -= 1
+        cpt_cluster_voisin[cluster_random] += 1 
+        centroides_voisin = calculer_centroides(X,z_voisin,k,d,n,cpt_cluster_voisin)
+        I_voisin = calculer_inertie(X,z_voisin,centroides_voisin,n,d)
+        deltaI = I_voisin - I
+        if deltaI > 0
+            somme += deltaI
+            cpt+=1
+        end
+    end
+    if cpt==0 
+        error("Pas de dégénération sur les 500 essais")
+    end
+    moyenne = somme/cpt
+    return (-moyenne)/log(taux_cible)
 end
 
 
 #fonction du recuit simulé et retournes : centroides, inertie, hist_best, hist_cur et hist_T
-function sa_kmeans(X::Matrix{Float64}, k::Int, cfg::Dict; rng::Random.AbstractRNG = Random.default_rng())
-    #TODO 
+function sa_kmeans(X::Matrix{Float64}, config::Dict,z_base::Vector{Int},I_base::Float64,cpt_cluster_base::Vector{Int}, centroides_base::Matrix{Float64},n::Int,d::Int)
+
+    k=config["data"]["k"]
+    n_iter = config["sa"]["n_iter"]
+    T_init = config["sa"]["T_init"]
+    T_min = config["sa"]["T_min"]
+    T0_auto = config["sa"]["T0_auto"]
+    taux_cible = config["sa"]["taux_cible"]
+    trace = config["sa"]["trace"]
+    L = config["sa"]["L"]
+    arret_par_stagnation = config["convergence"]["enabled"]
+    patience = config["convergence"]["patience"]
+    log_interval = config["sa"]["log_interval"]
+
+    if T0_auto 
+        T0 = calibrer_T0(X,z_base,k,taux_cible,cpt_cluster_base,n,d)
+    else
+        T0 = T_init
+    end
+
+    z_best = z_base
+    I_best = I_base
+    z_cur = z_base
+    I_cur = I_base
+    centroides = centroides_base
+    hist_best = Float64[]
+    hist_cur = Float64[]
+    hist_T = Float64[]
+    alpha = (T_min/T0)^(1/n_iter)
+    T = T0
+    A_plus = 0
+    premier_A_plus = true 
+    cpt_cluster_cur = cpt_cluster_base
+    
+    for i in 1:n_iter
+        push!(hist_best,I_best)
+        push!(hist_cur,I_cur)
+        push!(hist_T,T)
+        if T<=T_min 
+            cpt_cluster_best = taille_cluster(z_best,k,n)
+            centroides = calculer_centroides(X,z_best,k,d,n,cpt_cluster_best)
+            return I_best,z_best,centroides,hist_best,hist_cur,hist_T
+        end
+        if arret_par_stagnation
+            if A_plus >= patience && !premier_A_plus
+                cpt_cluster_best = taille_cluster(z_best,k,n)
+                centroides = calculer_centroides(X,z_best,k,d,n,cpt_cluster_best)
+                return I_best,z_best,centroides,hist_best,hist_cur,hist_T
+            end
+        end
+        x_random,cluster_random = voisin(z_cur,cpt_cluster_cur,k,n)
+        ancien_cluster=z_cur[x_random]
+        z_voisin=copy(z_cur)
+        cpt_cluster_voisin = copy(cpt_cluster_cur)
+        z_voisin[x_random] = cluster_random
+        cpt_cluster_voisin[ancien_cluster] -= 1
+        cpt_cluster_voisin[cluster_random] += 1 
+        centroides_voisin = calculer_centroides(X,z_voisin,k,d,n,cpt_cluster_voisin)
+        I_voisin = calculer_inertie(X,z_voisin,centroides_voisin,n,d)
+        proba = metropolis(I_cur,I_voisin,T)
+        p = rand()
+        if p<proba
+            z_cur = z_voisin
+            I_cur = I_voisin
+            cpt_cluster_cur = cpt_cluster_voisin
+        end
+        if I_cur < I_best 
+            I_best = I_cur
+            z_best = z_cur
+            premier_A_plus = false
+            A_plus = 0
+        elseif !premier_A_plus
+            A_plus+=1
+        end 
+        if trace || (log_interval > 0 && mod(i, log_interval) == 0)
+            println("Itération $i | T = $T | I_cur = $I_cur | I_best = $I_best ")
+        end
+        if mod(i,L)==0
+            T=T*alpha
+        end
+    end
+
+    push!(hist_best,I_best)
+    push!(hist_cur,I_cur)
+    push!(hist_T,T)
+    cpt_cluster_best = taille_cluster(z_best,k,n)
+    centroides = calculer_centroides(X,z_best,k,d,n,cpt_cluster_best)
+    return I_best,z_best,centroides,hist_best,hist_cur,hist_T
+    
 end
 
 
 #trace les historique de best, cur et baseline
 function tracer_convergence(hist_best::Vector{Float64}, hist_cur::Vector{Float64},inertie_baseline::Float64, chemin::AbstractString)
-    #TODO
+    iterations = 0:(length(hist_best) - 1)
+
+    graphique = plot(
+        iterations, 
+        hist_cur, 
+        label="Courante",
+        xlabel="Itération", 
+        ylabel="Inertie"
+    )
+
+    plot!(graphique, iterations, hist_best, label="Meilleure")
+    hline!(graphique, [inertie_baseline], label="Baseline", linestyle=:dash)
+
+    savefig(graphique, chemin)
+    display(graphique)
 end
 
 
 #trace l'historique de température
 function tracer_temperature(hist_T::Vector{Float64}, chemin::AbstractString)
-    #TODO 
+    iterations = 0:(length(hist_T) - 1)
+
+    graphique = plot(
+        iterations, 
+        hist_T, 
+        seriestype = :steppost,
+        label="Température",
+        xlabel="Itération", 
+        ylabel="Température"
+    )
+
+    savefig(graphique, chemin)
+    display(graphique) 
 end
 
 
 #trace les cluster si en dimension 2 
-function tracer_clusters_2d(X::Matrix{Float64}, z::Vector{Int}, centroides::Matrix{Float64}, chemin::AbstractString, inertie::Float64, k::Int)
+function tracer_clusters_2d(X::Matrix{Float64}, z::Vector{Int}, centroides::Matrix{Float64}, chemin::AbstractString, inertie::Float64, k::Int,titre::String)
     graphique = plot(
         xlabel = "x1",
         ylabel = "x2",
-        title = "Affectation cyclique (déterministe)  (inertie=$(round(inertie, digits=3)))",
+        title = titre,
     )
 
     for cluster in 1:k
@@ -165,35 +324,116 @@ function main()
 
     data_file = config["data"]["data_file"]
     k=config["data"]["k"]
+    n_runs=config["sa"]["n_runs"]
+    
+    chemin_csv = joinpath(dossier_projet,data_file)
+    X = charger_donnees(chemin_csv)
+    n,d=size(X)
+    X_norm = normaliser_donnees(X)
+    z_base=baseline_cyclique(k,n)
+    cpt_cluster_base = taille_cluster(z_base,k,n)
+    centroides_base = calculer_centroides(X,z_base,k,d,n,cpt_cluster_base)
+    I_base=calculer_inertie(X,z_base,centroides_base,n,d) 
 
-    n_iter = config["sa"]["n_iter"]
-    T_init = config["sa"]["T_init"]
-    T_min = config["sa"]["T_min"]
-    T0_auto = config["sa"]["T0_auto"]
-    taux_cible = config["sa"]["taux_cible"]
-    n_runs = config["sa"]["n_runs"]
-    trace = config["sa"]["trace"]
-    log_interval = config["sa"]["log_interval"]
-    L = config["sa"]["L"]
+    I_best,z_best,centroides,hist_best,hist_cur,hist_T = sa_kmeans(X_norm, config, z_base, I_base, cpt_cluster_base,centroides_base,n,d)
 
-    arret_par_stagnation = config["convergence"]["enabled"]
-    patience = config["convergence"]["patience"]
+    for i in 1:n_runs-1
+        I_best_2,z_best_2,centroides_2,hist_best_2,hist_cur_2,hist_T_2 = sa_kmeans(X_norm, config, z_base, I_base, cpt_cluster_base,centroides_base,n,d)
+        if I_best_2 < I_best
+            I_best = I_best_2
+            z_best=z_best_2
+            centroides=centroides_2
+            hist_best=hist_best_2
+            hist_cur=hist_cur_2
+            hist_T=hist_T_2
+        end
+    end
+
+    dossier_sortie = joinpath(dossier_projet, "output")
+    mkpath(dossier_sortie)
+
+    tracer_convergence(hist_best, hist_cur, I_base,joinpath(dossier_sortie, "convergence.png"))
+
+    tracer_temperature(hist_T,joinpath(dossier_sortie, "temperature.png"))
+
+    if d == 2
+        dossier_sortie = joinpath(dossier_projet, "output")
+        mkpath(dossier_sortie)
+        chemin_base = joinpath(dossier_sortie, "clusters_baseline.png")
+
+        titre_base = "Baseline cyclique (inertie=$(round(I_base, digits=3)))"
+        tracer_clusters_2d(X_norm, z_base, centroides_base,chemin_base, I_base, k, titre_base)
+
+        chemin_sa = joinpath(dossier_sortie, "clusters_sa.png")
+        titre_sa = "Recuit simulé (inertie=$(round(I_best, digits=3)))"
+        tracer_clusters_2d(X_norm, z_best, centroides,chemin_sa, I_best, k, titre_sa)
+    end
+end 
+
+
+#pour expérimentation : 
+function main_expe(config::Dict)
+    dossier_projet = dirname(@__DIR__)
+
+    data_file = config["data"]["data_file"]
+    k=config["data"]["k"]
+    n_runs=config["sa"]["n_runs"]
+    taux = config["sa"]["taux_cible"]
+
 
     chemin_csv = joinpath(dossier_projet,data_file)
     X = charger_donnees(chemin_csv)
     n,d=size(X)
     X_norm = normaliser_donnees(X)
     z_base=baseline_cyclique(k,n)
-    cpt_cluster = taille_cluster(z_base,k,n)
-    println(z_base)
-    centroides_base = calculer_centroides(X,z_base,k,d,n,cpt_cluster)
-    println(centroides_base)
+    cpt_cluster_base = taille_cluster(z_base,k,n)
+    centroides_base = calculer_centroides(X,z_base,k,d,n,cpt_cluster_base)
     I_base=calculer_inertie(X,z_base,centroides_base,n,d) 
-    println(I_base)
-    if d==2 
-        dossier_sortie = joinpath(dossier_projet, "output")
-        chemin_sortie = joinpath(dossier_sortie, "clusters_baseline.png")
-        tracer_clusters_2d(X,z_base,centroides_base,chemin_sortie,I_base,k)
+
+    I_best,z_best,centroides,hist_best,hist_cur,hist_T = sa_kmeans(X_norm, config, z_base, I_base, cpt_cluster_base,centroides_base,n,d)
+
+    for i in 1:n_runs-1
+        I_best_2,z_best_2,centroides_2,hist_best_2,hist_cur_2,hist_T_2 = sa_kmeans(X_norm, config, z_base, I_base, cpt_cluster_base,centroides_base,n,d)
+        if I_best_2 < I_best
+            I_best = I_best_2
+            z_best=z_best_2
+            centroides=centroides_2
+            hist_best=hist_best_2
+            hist_cur=hist_cur_2
+            hist_T=hist_T_2
+        end
+    end
+
+    println("Taux cible = $taux | Baseline = $I_base | Meilleure inertie = $I_best")
+
+    dossier_sortie = joinpath(dossier_projet, "output","taux_$(taux)")
+    mkpath(dossier_sortie)
+
+    tracer_convergence(hist_best, hist_cur, I_base,joinpath(dossier_sortie, "convergence.png"))
+
+    tracer_temperature(hist_T,joinpath(dossier_sortie, "temperature.png"))
+
+    if d == 2
+        chemin_base = joinpath(dossier_sortie, "clusters_baseline.png")
+
+        titre_base = "Baseline cyclique (inertie=$(round(I_base, digits=3)))"
+        tracer_clusters_2d(X_norm, z_base, centroides_base,chemin_base, I_base, k, titre_base)
+
+        chemin_sa = joinpath(dossier_sortie, "clusters_sa.png")
+        titre_sa = "Recuit simulé (inertie=$(round(I_best, digits=3)))"
+        tracer_clusters_2d(X_norm, z_best, centroides,chemin_sa, I_best, k, titre_sa)
     end
 end 
+
+function experimentation_taux_cible()
+    dossier_projet = dirname(@__DIR__)
+    config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
+    config["sa"]["T0_auto"] = true
+
+    for taux in [0.50, 0.65, 0.80]
+        config["sa"]["taux_cible"] = taux
+        main_expe(config)
+    end
+end
+
 

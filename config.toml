@@ -3,16 +3,16 @@ data_file = "data/donnees_didactique.csv"
 k = 6 # nombre de clusters
 
 [sa]
-n_iter = 50000 # budget total d’iterations par run
+n_iter = 100000 # budget total d’iterations par run
 T_init = 0.08 # ignore si T0_auto = true
 T_min = 1.0e-5 # temperature minimale
 T0_auto = true # calibrage automatique de T0
 taux_cible = 0.80 # taux d’acceptation cible pour calibrage
-n_runs = 3 # runs independants, meilleur retenu
+n_runs = 10 # runs independants, meilleur retenu
 trace = false # affichage iteration par iteration
-log_interval = 5000 # frequence du rapport periodique
-L = 1 #plage de changement de température 
+log_interval = 50000 # frequence du rapport periodique
+L = 10 #plage de changement de température 
 
 [convergence]
-enabled = true # arret anticipe apres stagnation post-A++
+enabled = false # arret anticipe apres stagnation post-A++
 patience = 2000 # iterations sans A++ avant arret

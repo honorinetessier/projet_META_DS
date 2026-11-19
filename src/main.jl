@@ -372,13 +372,12 @@ end
 
 
 #pour expérimentation : 
-function main_expe(config::Dict)
+function main_expe(config::Dict,parametre::String, valeur)
     dossier_projet = dirname(@__DIR__)
 
     data_file = config["data"]["data_file"]
     k=config["data"]["k"]
     n_runs=config["sa"]["n_runs"]
-    taux = config["sa"]["taux_cible"]
 
 
     chemin_csv = joinpath(dossier_projet,data_file)
@@ -404,9 +403,9 @@ function main_expe(config::Dict)
         end
     end
 
-    println("Taux cible = $taux | Baseline = $I_base | Meilleure inertie = $I_best")
+    println("$parametre = $valeur | Baseline = $I_base | Meilleure inertie = $I_best")
 
-    dossier_sortie = joinpath(dossier_projet, "output","taux_$(taux)")
+    dossier_sortie = joinpath(dossier_projet, "output", parametre, string(valeur))
     mkpath(dossier_sortie)
 
     tracer_convergence(hist_best, hist_cur, I_base,joinpath(dossier_sortie, "convergence.png"))
@@ -429,11 +428,36 @@ function experimentation_taux_cible()
     dossier_projet = dirname(@__DIR__)
     config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
     config["sa"]["T0_auto"] = true
-
     for taux in [0.50, 0.65, 0.80]
         config["sa"]["taux_cible"] = taux
-        main_expe(config)
+        main_expe(config,"taux_cible",taux)
     end
 end
 
+function experimentation_n_runs()
+    dossier_projet = dirname(@__DIR__)
+    config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
+    for runs in [1,3,5]
+        config["sa"]["n_runs"] = runs
+        main_expe(config,"n_runs",runs)
+    end
+end
 
+function experimentation_n_iter()
+    dossier_projet = dirname(@__DIR__)
+    config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
+    for iter in [20000,50000,100000]
+        config["sa"]["n_iter"] = iter
+        main_expe(config,"n_iter",iter)
+    end
+end
+
+function experimentation_patience()
+    dossier_projet = dirname(@__DIR__)
+    config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
+    config["convergence"]["enabled"] = true
+    for pat in [1000, 2000, 5000]
+        config["convergence"]["patience"] = pat
+        main_expe(config,"patience",pat)
+    end
+end

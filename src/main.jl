@@ -653,5 +653,39 @@ function experimentation_L()
     end
 end
 
+function experimentation_t_init()
+    dossier_projet = dirname(@__DIR__)
+    config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
+    config["sa"]["T0_auto"] = true
+
+    #affichage des sorties sur terminal dans un fichier txt 
+    dossier_sortie = joinpath(dossier_projet, "output", "t_init")
+    mkpath(dossier_sortie)
+    chemin_resultats = joinpath(dossier_sortie, "resultats.txt")
+    
+    open(chemin_resultats, "w") do fichier
+        redirect_stdout(fichier) do
+            meilleures_inerties = Float64[]
+
+            for repetition in 1:5 
+                println("t_init | Répétition $repetition")
+                I_best =  main_expe(config,"t_init",0.08,repetition)
+                push!(meilleures_inerties,I_best)
+            end
+
+            moyenne = mean(meilleures_inerties)
+            ecart_type = std(meilleures_inerties)
+            best = minimum(meilleures_inerties)
+
+            println("----Bilan pour t_inir = 0.08----")
+            println("Meilleure inertie = $best")
+            println("Moyenne des meilleures inerties = $moyenne")
+            println("Écart-type = $ecart_type")
+            println("")
+            
+        end
+    end
+end
+
 
 

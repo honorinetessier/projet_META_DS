@@ -37,9 +37,11 @@ Après une modification du code, recharger le fichier avec `include("main.jl")`.
 | `main()` | Lance le recuit avec les paramètres actuels de `config.toml`. |
 | `experimentation_L()` | Teste les valeurs de `L` : `1`, `10`, `100`, `1000`. |
 | `experimentation_patience()` | Teste les valeurs de `patience` : `1000`, `2000`, `5000`. |
+| `experimentation_t_init()` | T0_auto = false, avec t_init = `0.08` |
 | `experimentation_taux_cible()` | Teste les valeurs de `taux_cible` : `0.50`, `0.65`, `0.80`. |
 | `experimentation_n_runs()` | Teste les valeurs de `n_runs` : `1`, `3`, `5`. |
 | `experimentation_n_iter()` | Teste les valeurs de `n_iter` : `20000`, `50000`. |
+
 
 
 
@@ -61,7 +63,7 @@ Le bilan indique notamment :
 
 Le dossier `output/` regroupe les résultats par instance, puis par paramètre étudié.
 
-Par exemple, pour `donnees_didactique`, les expériences sont réparties dans les dossiers `L`, `n_iter`, `n_runs`, `patience` et `taux_cible`.
+Par exemple, pour `donnees_didactique`, les expériences sont réparties dans les dossiers `L`, `n_iter`, `t_init`, `n_runs`, `patience` et `taux_cible`.
 
 Chaque dossier d’expérimentation contient :
 

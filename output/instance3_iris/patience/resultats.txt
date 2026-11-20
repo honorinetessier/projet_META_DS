@@ -1,105 +1,105 @@
 patience = 1000 | Répétition 1
-patience = 1000 | Baseline = 38.44068688600417 | Meilleure inertie = 11.588087065454511
-Inertie moyenne = 12.007282970394272
-Écart-type = 0.36456203068039594
-Nombre d'itération = 6575
+patience = 1000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.964430481988277
+Inertie moyenne = 14.038813883700163
+Écart-type = 4.399491537196805
+Nombre d'itération = 9712
 
 patience = 1000 | Répétition 2
-patience = 1000 | Baseline = 38.44068688600417 | Meilleure inertie = 10.646122094328115
-Inertie moyenne = 11.784056654702665
-Écart-type = 1.0079851379651772
-Nombre d'itération = 5334
+patience = 1000 | Baseline = 38.83127953985993 | Meilleure inertie = 11.676225593774822
+Inertie moyenne = 12.441782858066937
+Écart-type = 1.07666129168893
+Nombre d'itération = 5721
 
 patience = 1000 | Répétition 3
-patience = 1000 | Baseline = 38.44068688600417 | Meilleure inertie = 11.020535252608555
-Inertie moyenne = 11.645417224333093
-Écart-type = 0.6290879750257573
-Nombre d'itération = 5199
+patience = 1000 | Baseline = 38.83127953985993 | Meilleure inertie = 11.433824414154826
+Inertie moyenne = 11.988495556644954
+Écart-type = 0.5189134618242442
+Nombre d'itération = 5977
 
 patience = 1000 | Répétition 4
-patience = 1000 | Baseline = 38.44068688600417 | Meilleure inertie = 10.166783757027773
-Inertie moyenne = 11.63970407841992
-Écart-type = 1.2955709501496555
-Nombre d'itération = 8864
+patience = 1000 | Baseline = 38.83127953985993 | Meilleure inertie = 11.28983608231772
+Inertie moyenne = 12.184389560288267
+Écart-type = 1.45782738287578
+Nombre d'itération = 6219
 
 patience = 1000 | Répétition 5
-patience = 1000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.31425064407345
-Inertie moyenne = 9.506818490382406
-Écart-type = 2.7655647502851437
-Nombre d'itération = 15213
+patience = 1000 | Baseline = 38.83127953985993 | Meilleure inertie = 11.881230410633124
+Inertie moyenne = 13.290954508925607
+Écart-type = 1.8819566302345148
+Nombre d'itération = 6976
 
 ----Bilan pour patience = 1000----
-Meilleure inertie = 6.31425064407345
-Moyenne des meilleures inerties = 9.94715576269848
-Écart-type = 2.0964010267182336
+Meilleure inertie = 8.964430481988277
+Moyenne des meilleures inerties = 11.049109396573753
+Écart-type = 1.187175352015245
 
 patience = 2000 | Répétition 1
-patience = 2000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.177131938180462
-Inertie moyenne = 8.000815098367953
-Écart-type = 3.109267372048494
-Nombre d'itération = 20925
+patience = 2000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.373381087960622
+Inertie moyenne = 9.839549361138518
+Écart-type = 2.265539000749156
+Nombre d'itération = 15594
 
 patience = 2000 | Répétition 2
-patience = 2000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.177131938180462
-Inertie moyenne = 6.218307738113897
-Écart-type = 0.03622224308843648
-Nombre d'itération = 22965
+patience = 2000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.373381087960622
+Inertie moyenne = 10.632392512490071
+Écart-type = 2.0710099529720782
+Nombre d'itération = 15265
 
 patience = 2000 | Répétition 3
-patience = 2000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.297566539389375
-Inertie moyenne = 9.1554287948224
-Écart-type = 3.005510033534491
-Nombre d'itération = 17039
+patience = 2000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.373381087960622
+Inertie moyenne = 8.393212462979188
+Écart-type = 0.018669958846127818
+Nombre d'itération = 14371
 
 patience = 2000 | Répétition 4
-patience = 2000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.177131938180462
-Inertie moyenne = 6.292932092784155
-Écart-type = 0.10482395727972046
-Nombre d'itération = 23926
+patience = 2000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.434407865045122
+Inertie moyenne = 9.720811364763009
+Écart-type = 1.8960587951910823
+Nombre d'itération = 13466
 
 patience = 2000 | Répétition 5
-patience = 2000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.192897233634965
-Inertie moyenne = 6.255525343432687
-Écart-type = 0.05787927076693241
-Nombre d'itération = 20284
+patience = 2000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.373381087960622
+Inertie moyenne = 9.436175355969654
+Écart-type = 1.7488217813707656
+Nombre d'itération = 14381
 
 ----Bilan pour patience = 2000----
-Meilleure inertie = 6.177131938180462
-Moyenne des meilleures inerties = 6.2043719175131455
-Écart-type = 0.052542733415032114
+Meilleure inertie = 8.373381087960622
+Moyenne des meilleures inerties = 8.385586443377523
+Écart-type = 0.027292004401733634
 
 patience = 5000 | Répétition 1
-patience = 5000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.177131938180462
-Inertie moyenne = 6.212799424751836
-Écart-type = 0.03094740185658604
-Nombre d'itération = 24540
+patience = 5000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.373381087960622
+Inertie moyenne = 8.373381087960622
+Écart-type = 0.0
+Nombre d'itération = 17707
 
 patience = 5000 | Répétition 2
-patience = 5000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.177131938180462
-Inertie moyenne = 6.203100619207479
-Écart-type = 0.04497907494434298
-Nombre d'itération = 34943
+patience = 5000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.373381087960622
+Inertie moyenne = 8.373381087960622
+Écart-type = 0.0
+Nombre d'itération = 18779
 
 patience = 5000 | Répétition 3
-patience = 5000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.177131938180462
-Inertie moyenne = 6.201551042053918
-Écart-type = 0.042295128584126526
-Nombre d'itération = 25699
+patience = 5000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.373381087960622
+Inertie moyenne = 8.373381087960622
+Écart-type = 0.0
+Nombre d'itération = 18421
 
 patience = 5000 | Répétition 4
-patience = 5000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.177131938180462
-Inertie moyenne = 6.214066877654087
-Écart-type = 0.031986595871399626
-Nombre d'itération = 26360
+patience = 5000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.373381087960622
+Inertie moyenne = 8.373381087960622
+Écart-type = 0.0
+Nombre d'itération = 19882
 
 patience = 5000 | Répétition 5
-patience = 5000 | Baseline = 38.44068688600417 | Meilleure inertie = 6.177131938180462
-Inertie moyenne = 6.225970145927373
-Écart-type = 0.04229512858412653
-Nombre d'itération = 28143
+patience = 5000 | Baseline = 38.83127953985993 | Meilleure inertie = 8.373381087960622
+Inertie moyenne = 8.373381087960622
+Écart-type = 0.0
+Nombre d'itération = 19282
 
 ----Bilan pour patience = 5000----
-Meilleure inertie = 6.177131938180462
-Moyenne des meilleures inerties = 6.177131938180462
+Meilleure inertie = 8.373381087960622
+Moyenne des meilleures inerties = 8.373381087960622
 Écart-type = 0.0
 

@@ -1,7 +1,7 @@
 using DelimitedFiles
 using TOML
 using Plots 
-
+using Statistics
 
 #lire le CSV et renvoyer la matrice X 
 function charger_donnees(chemin::AbstractString)
@@ -39,7 +39,7 @@ function charger_donnees(chemin::AbstractString)
 end
 
 
-#normalise les vecteurs de la matrice X selon la stratégie vu au CM1 AED
+#normalise les vecteurs de la matrice X selon la norme min-max
 function normaliser_donnees(X::Matrix{Float64})
     for j in 1:size(X, 2)
         mn = minimum(X[:, j]); mx = maximum(X[:, j])
@@ -48,6 +48,7 @@ function normaliser_donnees(X::Matrix{Float64})
     return X 
 end 
 
+#stocke ensuite la taille des cluster, ce qui permet de ne pas la recalculer à chaque fois et juste de la mettre à jours 
 function taille_cluster(z::Vector{Int},k::Int,n::Int)
     cpt_cluster=zeros(Int,k)
     for i in 1:n
@@ -77,7 +78,7 @@ function calculer_centroides(X::Matrix{Float64}, z::Vector{Int}, k::Int, d::Int,
 end
 
 
-#calcul l'inertie d'une solution via X, z et la matrice des centres 
+#calcul l'inertie d'une solution  
 function calculer_inertie(X::Matrix{Float64}, z::Vector{Int}, centroides::Matrix{Float64}, n::Int, d::Int)
     I = 0
     for i in 1:n
@@ -101,18 +102,18 @@ function baseline_cyclique(k::Int,n::Int)
 end 
 
 
-#générer un voisin 
-function voisin(z::Vector{Int},cpt_cluster::Vector{Int},k::Int, n::Int)
+#générer un voisin, récupérer aléaoirement un point et son nouveau cluser 
+function voisin(z::Vector{Int},k::Int, n::Int)
     x_random = rand(1:n)
     cluster_random = rand(1:k)
-    while cluster_random == z[x_random] || cpt_cluster[z[x_random]] <= 1
-        x_random = rand(1:n)
+    while cluster_random == z[x_random] 
         cluster_random = rand(1:k)
     end
     return x_random, cluster_random
 end 
 
 
+#règne d'acceptation de Metropolis, retourne la probabilité 
 function metropolis(I::Float64,I_voisin::Float64,T::Float64)
     deltaI = I_voisin - I
     if deltaI <= 0 
@@ -127,12 +128,18 @@ end
 function calibrer_T0(X::Matrix{Float64},z::Vector{Int}, k::Int, taux_cible::Float64, cpt_cluster::Vector{Int},n::Int,d::Int)
     centroides = calculer_centroides(X,z,k,d,n,cpt_cluster)
     I = calculer_inertie(X,z,centroides,n,d)
-    somme = 0.0
+    somme = 0.0 #somme et ctp pour faire la moyenne des dégradations 
     cpt = 0
 
     for i in 1:500
-        x_random,cluster_random = voisin(z,cpt_cluster,k,n)
+        x_random,cluster_random = voisin(z,k,n)
         ancien_cluster=z[x_random]
+
+        #validation du voisin
+        if cpt_cluster[ancien_cluster] <= 1
+            continue
+        end 
+
         z_voisin=copy(z)
         cpt_cluster_voisin = copy(cpt_cluster)
         z_voisin[x_random] = cluster_random
@@ -146,7 +153,7 @@ function calibrer_T0(X::Matrix{Float64},z::Vector{Int}, k::Int, taux_cible::Floa
             cpt+=1
         end
     end
-    if cpt==0 
+    if cpt==0 #division par zéro 
         error("Pas de dégénération sur les 500 essais")
     end
     moyenne = somme/cpt
@@ -154,7 +161,8 @@ function calibrer_T0(X::Matrix{Float64},z::Vector{Int}, k::Int, taux_cible::Floa
 end
 
 
-#fonction du recuit simulé et retournes : centroides, inertie, hist_best, hist_cur et hist_T
+#fonction du recuit simulé et retournes : centroides, inertie, hist_best, hist_cur et hist_T, et z_best 
+#ici je fais le choix de rajouter des paramètres par rapport au sujet pour éviter de recalculer à chaque run la baseline
 function sa_kmeans(X::Matrix{Float64}, config::Dict,z_base::Vector{Int},I_base::Float64,cpt_cluster_base::Vector{Int}, centroides_base::Matrix{Float64},n::Int,d::Int)
 
     k=config["data"]["k"]
@@ -183,55 +191,74 @@ function sa_kmeans(X::Matrix{Float64}, config::Dict,z_base::Vector{Int},I_base::
     hist_best = Float64[]
     hist_cur = Float64[]
     hist_T = Float64[]
-    alpha = (T_min/T0)^(1/n_iter)
+
+    #calcul de alpha
+    nombre_paliers = div(n_iter,L)
+    alpha = (T_min/T0)^(1/nombre_paliers)
+
     T = T0
     A_plus = 0
-    premier_A_plus = true 
+    premier_A_plus = true #pour paciente, on attends le premier A++ pour la mettre en place 
     cpt_cluster_cur = cpt_cluster_base
     
-    for i in 1:n_iter
-        push!(hist_best,I_best)
+    for i in 1:n_iter #première condition d'arrêt : le nombre d'itération
+        push!(hist_best,I_best) #mise à jour des historique à chaque itération 
         push!(hist_cur,I_cur)
         push!(hist_T,T)
-        if T<=T_min 
+
+        if T<=T_min #deuxième condition d'arrêt : la température minimal 
             cpt_cluster_best = taille_cluster(z_best,k,n)
             centroides = calculer_centroides(X,z_best,k,d,n,cpt_cluster_best)
             return I_best,z_best,centroides,hist_best,hist_cur,hist_T
         end
-        if arret_par_stagnation
+
+        if arret_par_stagnation #troisième condition d'arrêt (optionnelle) : arrêt si pendant un certain temps pas de nouvelle amélioration 
             if A_plus >= patience && !premier_A_plus
                 cpt_cluster_best = taille_cluster(z_best,k,n)
                 centroides = calculer_centroides(X,z_best,k,d,n,cpt_cluster_best)
                 return I_best,z_best,centroides,hist_best,hist_cur,hist_T
             end
         end
-        x_random,cluster_random = voisin(z_cur,cpt_cluster_cur,k,n)
+
+        #récupération du voisin 
+        x_random,cluster_random = voisin(z_cur,k,n)
         ancien_cluster=z_cur[x_random]
-        z_voisin=copy(z_cur)
-        cpt_cluster_voisin = copy(cpt_cluster_cur)
-        z_voisin[x_random] = cluster_random
-        cpt_cluster_voisin[ancien_cluster] -= 1
-        cpt_cluster_voisin[cluster_random] += 1 
-        centroides_voisin = calculer_centroides(X,z_voisin,k,d,n,cpt_cluster_voisin)
-        I_voisin = calculer_inertie(X,z_voisin,centroides_voisin,n,d)
-        proba = metropolis(I_cur,I_voisin,T)
-        p = rand()
-        if p<proba
-            z_cur = z_voisin
-            I_cur = I_voisin
-            cpt_cluster_cur = cpt_cluster_voisin
+
+        if cpt_cluster_cur[ancien_cluster] > 1 
+            z_voisin=copy(z_cur)
+            cpt_cluster_voisin = copy(cpt_cluster_cur)
+            z_voisin[x_random] = cluster_random
+            cpt_cluster_voisin[ancien_cluster] -= 1
+            cpt_cluster_voisin[cluster_random] += 1 
+            centroides_voisin = calculer_centroides(X,z_voisin,k,d,n,cpt_cluster_voisin)
+            I_voisin = calculer_inertie(X,z_voisin,centroides_voisin,n,d)
+            proba = metropolis(I_cur,I_voisin,T)
+            p = rand()
+
+            #validation du voisin 
+            if p<proba
+                z_cur = z_voisin
+                I_cur = I_voisin
+                cpt_cluster_cur = cpt_cluster_voisin
+            end
         end
+
+        #mise à jour de la meilleur solution 
         if I_cur < I_best 
             I_best = I_cur
             z_best = z_cur
-            premier_A_plus = false
+            premier_A_plus = false 
             A_plus = 0
-        elseif !premier_A_plus
+        elseif !premier_A_plus #on a déjà eu le premier A++ 
             A_plus+=1
         end 
+
+        #affichage de la trace 
         if trace || (log_interval > 0 && mod(i, log_interval) == 0)
             println("Itération $i | T = $T | I_cur = $I_cur | I_best = $I_best ")
         end
+
+        #mise à jour de la température en fonction des paliers L 
         if mod(i,L)==0
             T=T*alpha
         end
@@ -294,18 +321,19 @@ function tracer_clusters_2d(X::Matrix{Float64}, z::Vector{Int}, centroides::Matr
     )
 
     for cluster in 1:k
-        lignes = (z .== cluster)
+        lignes = (z .== cluster) #ligne[i] vaut true si le point i appartient au cluster courant 
         scatter!(graphique,
             X[lignes, 1],             
             X[lignes, 2],              
             color = cluster,           
             label = "Cluster $cluster"
         )
+        #ajout des centroides 
         scatter!(graphique,
             [centroides[cluster, 1]],  
             [centroides[cluster, 2]],  
-            color = cluster,           
-            markershape = :star5,
+            color = cluster, #même couleur que les points       
+            markershape = :star5, #forme étoile 
             markersize = 12,
             markerstrokecolor = :black,
             label = ""                 
@@ -318,27 +346,35 @@ end
 
 
 function main()
+    #récupération du fichier config 
     dossier_projet = dirname(@__DIR__)
     chemin_config = joinpath(dossier_projet,"config.toml")
-    config = TOML.parsefile(chemin_config) #lit le fichier config 
+    config = TOML.parsefile(chemin_config) 
 
     data_file = config["data"]["data_file"]
     k=config["data"]["k"]
     n_runs=config["sa"]["n_runs"]
     
+    #récupération de l'instance 
     chemin_csv = joinpath(dossier_projet,data_file)
+
     X = charger_donnees(chemin_csv)
     n,d=size(X)
     X_norm = normaliser_donnees(X)
+
+    #création de la solution de base 
     z_base=baseline_cyclique(k,n)
     cpt_cluster_base = taille_cluster(z_base,k,n)
     centroides_base = calculer_centroides(X,z_base,k,d,n,cpt_cluster_base)
     I_base=calculer_inertie(X,z_base,centroides_base,n,d) 
 
+    #première runs de sa 
     I_best,z_best,centroides,hist_best,hist_cur,hist_T = sa_kmeans(X_norm, config, z_base, I_base, cpt_cluster_base,centroides_base,n,d)
 
+    #runs suivantes de sa 
     for i in 1:n_runs-1
         I_best_2,z_best_2,centroides_2,hist_best_2,hist_cur_2,hist_T_2 = sa_kmeans(X_norm, config, z_base, I_base, cpt_cluster_base,centroides_base,n,d)
+        #mise à jour de la solution si la nouvelle run est meilleur (plus petite inertie)
         if I_best_2 < I_best
             I_best = I_best_2
             z_best=z_best_2
@@ -349,21 +385,19 @@ function main()
         end
     end
 
+    #tracer les graphiques 
     dossier_sortie = joinpath(dossier_projet, "output")
     mkpath(dossier_sortie)
-
     tracer_convergence(hist_best, hist_cur, I_base,joinpath(dossier_sortie, "convergence.png"))
-
     tracer_temperature(hist_T,joinpath(dossier_sortie, "temperature.png"))
 
+    #si en dimension 2, retour visuel de la meilleur solution 
     if d == 2
         dossier_sortie = joinpath(dossier_projet, "output")
         mkpath(dossier_sortie)
         chemin_base = joinpath(dossier_sortie, "clusters_baseline.png")
-
         titre_base = "Baseline cyclique (inertie=$(round(I_base, digits=3)))"
         tracer_clusters_2d(X_norm, z_base, centroides_base,chemin_base, I_base, k, titre_base)
-
         chemin_sa = joinpath(dossier_sortie, "clusters_sa.png")
         titre_sa = "Recuit simulé (inertie=$(round(I_best, digits=3)))"
         tracer_clusters_2d(X_norm, z_best, centroides,chemin_sa, I_best, k, titre_sa)
@@ -371,8 +405,8 @@ function main()
 end 
 
 
-#pour expérimentation : 
-function main_expe(config::Dict,parametre::String, valeur)
+#pour expérimentation, comme main précédent mais avec config qui est modifié, le parametre pour créer le dossier de sortie des graphiques , repetition pour respecter les 5 repetitions demandé des expérimentations 
+function main_expe(config::Dict,parametre::String, valeur,repetition::Int)
     dossier_projet = dirname(@__DIR__)
 
     data_file = config["data"]["data_file"]
@@ -390,9 +424,11 @@ function main_expe(config::Dict,parametre::String, valeur)
     I_base=calculer_inertie(X,z_base,centroides_base,n,d) 
 
     I_best,z_best,centroides,hist_best,hist_cur,hist_T = sa_kmeans(X_norm, config, z_base, I_base, cpt_cluster_base,centroides_base,n,d)
+    inerties=[I_best]
 
     for i in 1:n_runs-1
         I_best_2,z_best_2,centroides_2,hist_best_2,hist_cur_2,hist_T_2 = sa_kmeans(X_norm, config, z_base, I_base, cpt_cluster_base,centroides_base,n,d)
+        push!(inerties, I_best_2)
         if I_best_2 < I_best
             I_best = I_best_2
             z_best=z_best_2
@@ -403,61 +439,219 @@ function main_expe(config::Dict,parametre::String, valeur)
         end
     end
 
+    #calcul des statisques de l'expérimentation
     println("$parametre = $valeur | Baseline = $I_base | Meilleure inertie = $I_best")
+    moyenne = mean(inerties)
+    println("Inertie moyenne = $moyenne")
+    if length(inerties) >= 2
+        ecart_type = std(inerties)
+        println("Écart-type = $ecart_type")
+    end
+    nb_iter = length(hist_cur)-1
+    println("Nombre d'itération = $nb_iter")
+    println("")
 
-    dossier_sortie = joinpath(dossier_projet, "output", parametre, string(valeur))
+    #un dossier différent en fonction du paramètre testé, et un fichier par paramètres 
+    dossier_sortie = joinpath(dossier_projet, "output", parametre, string(valeur),"repetition_$(repetition)")
     mkpath(dossier_sortie)
-
     tracer_convergence(hist_best, hist_cur, I_base,joinpath(dossier_sortie, "convergence.png"))
-
     tracer_temperature(hist_T,joinpath(dossier_sortie, "temperature.png"))
 
     if d == 2
         chemin_base = joinpath(dossier_sortie, "clusters_baseline.png")
-
         titre_base = "Baseline cyclique (inertie=$(round(I_base, digits=3)))"
         tracer_clusters_2d(X_norm, z_base, centroides_base,chemin_base, I_base, k, titre_base)
-
         chemin_sa = joinpath(dossier_sortie, "clusters_sa.png")
         titre_sa = "Recuit simulé (inertie=$(round(I_best, digits=3)))"
         tracer_clusters_2d(X_norm, z_best, centroides,chemin_sa, I_best, k, titre_sa)
     end
+
+    return I_best
 end 
 
+
+#les différentes fonctions d'expérimentation 
 function experimentation_taux_cible()
     dossier_projet = dirname(@__DIR__)
     config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
-    config["sa"]["T0_auto"] = true
-    for taux in [0.50, 0.65, 0.80]
-        config["sa"]["taux_cible"] = taux
-        main_expe(config,"taux_cible",taux)
+    config["sa"]["T0_auto"] = true #si on test taux_cible, on doit valider T0_auto, sinon utilise T_init de config 
+
+    #affichage des sorties sur terminal dans un fichier txt 
+    dossier_sortie = joinpath(dossier_projet, "output", "taux_cible")
+    mkpath(dossier_sortie)
+    chemin_resultats = joinpath(dossier_sortie, "resultats.txt")
+
+    open(chemin_resultats, "w") do fichier
+        redirect_stdout(fichier) do
+            for taux in [0.50, 0.65, 0.80]
+                config["sa"]["taux_cible"] = taux #mise à jour de config 
+                meilleures_inerties = Float64[]
+                
+                for repetition in 1:5
+                    println("taux_cible = $taux | Répétition $repetition")
+                    I_best =  main_expe(config,"taux_cible",taux,repetition)
+                    push!(meilleures_inerties,I_best)
+                end 
+
+                moyenne = mean(meilleures_inerties)
+                ecart_type = std(meilleures_inerties)
+                best = minimum(meilleures_inerties)
+
+                println("----Bilan pour taux_cible = $taux----")
+                println("Meilleure inertie = $best")
+                println("Moyenne des meilleures inerties = $moyenne")
+                println("Écart-type = $ecart_type")
+                println("")
+
+            end
+        end
     end
 end
 
 function experimentation_n_runs()
     dossier_projet = dirname(@__DIR__)
     config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
-    for runs in [1,3,5]
-        config["sa"]["n_runs"] = runs
-        main_expe(config,"n_runs",runs)
+
+    #affichage des sorties sur terminal dans un fichier txt 
+    dossier_sortie = joinpath(dossier_projet, "output", "n_runs")
+    mkpath(dossier_sortie)
+    chemin_resultats = joinpath(dossier_sortie, "resultats.txt")
+
+    open(chemin_resultats, "w") do fichier
+        redirect_stdout(fichier) do
+            for runs in [1,3,5]
+                config["sa"]["n_runs"] = runs
+                meilleures_inerties = Float64[]
+
+                for repetition in 1:5 
+                    println("n_runs = $runs | Répétition $repetition")
+                    I_best =  main_expe(config,"n_runs",runs,repetition)
+                    push!(meilleures_inerties,I_best)
+                end
+
+                moyenne = mean(meilleures_inerties)
+                ecart_type = std(meilleures_inerties)
+                best = minimum(meilleures_inerties)
+
+                println("----Bilan pour n_runs = $runs----")
+                println("Meilleure inertie = $best")
+                println("Moyenne des meilleures inerties = $moyenne")
+                println("Écart-type = $ecart_type")
+                println("")
+
+            end
+        end
     end
 end
 
 function experimentation_n_iter()
     dossier_projet = dirname(@__DIR__)
     config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
-    for iter in [20000,50000,100000]
-        config["sa"]["n_iter"] = iter
-        main_expe(config,"n_iter",iter)
+
+    #affichage des sorties sur terminal dans un fichier txt 
+    dossier_sortie = joinpath(dossier_projet, "output", "n_iter")
+    mkpath(dossier_sortie)
+    chemin_resultats = joinpath(dossier_sortie, "resultats.txt")
+
+    open(chemin_resultats, "w") do fichier
+        redirect_stdout(fichier) do
+            for iter in [20000,50000,100000]
+                config["sa"]["n_iter"] = iter
+                meilleures_inerties = Float64[]
+
+                for repetition in 1:5 
+                    println("n_iter = $iter | Répétition $repetition")
+                    I_best =  main_expe(config,"n_iter",iter,repetition)
+                    push!(meilleures_inerties,I_best)
+                end
+
+                moyenne = mean(meilleures_inerties)
+                ecart_type = std(meilleures_inerties)
+                best = minimum(meilleures_inerties)
+
+                println("----Bilan pour n_iter = $iter----")
+                println("Meilleure inertie = $best")
+                println("Moyenne des meilleures inerties = $moyenne")
+                println("Écart-type = $ecart_type")
+                println("")
+            end
+        end
     end
 end
 
+#pour experimentation resultat dans le fichier txt resultat qui se trouve dans le dossier output/patience
 function experimentation_patience()
     dossier_projet = dirname(@__DIR__)
     config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
-    config["convergence"]["enabled"] = true
-    for pat in [1000, 2000, 5000]
-        config["convergence"]["patience"] = pat
-        main_expe(config,"patience",pat)
+    config["convergence"]["enabled"] = true #on doit bien valider enabled sinon le critère d'arrêt par stagnation n'est pas activé 
+
+    #affichage des sorties sur terminal dans un fichier txt 
+    dossier_sortie = joinpath(dossier_projet, "output", "patience")
+    mkpath(dossier_sortie)
+    chemin_resultats = joinpath(dossier_sortie, "resultats.txt")
+    
+    open(chemin_resultats, "w") do fichier
+        redirect_stdout(fichier) do
+            for pat in [1000, 2000, 5000]
+                config["convergence"]["patience"] = pat
+                meilleures_inerties = Float64[]
+
+                for repetition in 1:5 
+                    println("patience = $pat | Répétition $repetition")
+                    I_best =  main_expe(config,"patience",pat,repetition)
+                    push!(meilleures_inerties,I_best)
+                end
+
+                moyenne = mean(meilleures_inerties)
+                ecart_type = std(meilleures_inerties)
+                best = minimum(meilleures_inerties)
+
+                println("----Bilan pour patience = $pat----")
+                println("Meilleure inertie = $best")
+                println("Moyenne des meilleures inerties = $moyenne")
+                println("Écart-type = $ecart_type")
+                println("")
+                
+            end
+        end
     end
 end
+
+function experimentation_L()
+    dossier_projet = dirname(@__DIR__)
+    config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
+
+    #affichage des sorties sur terminal dans un fichier txt 
+    dossier_sortie = joinpath(dossier_projet, "output", "L")
+    mkpath(dossier_sortie)
+    chemin_resultats = joinpath(dossier_sortie, "resultats.txt")
+    
+    open(chemin_resultats, "w") do fichier
+        redirect_stdout(fichier) do
+            for l in [1, 10, 100, 1000]
+                config["sa"]["L"] = l
+                meilleures_inerties = Float64[]
+
+                for repetition in 1:5 
+                    println("L = $l | Répétition $repetition")
+                    I_best =  main_expe(config,"L",l,repetition)
+                    push!(meilleures_inerties,I_best)
+                end
+
+                moyenne = mean(meilleures_inerties)
+                ecart_type = std(meilleures_inerties)
+                best = minimum(meilleures_inerties)
+
+                println("----Bilan pour L = $l----")
+                println("Meilleure inertie = $best")
+                println("Moyenne des meilleures inerties = $moyenne")
+                println("Écart-type = $ecart_type")
+                println("")
+                
+            end
+        end
+    end
+end
+
+
+

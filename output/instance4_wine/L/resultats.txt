@@ -1,0 +1,140 @@
+L = 1 | Répétition 1
+L = 1 | Baseline = 104.87377286100842 | Meilleure inertie = 40.574983436933124
+Inertie moyenne = 41.4963726480103
+Écart-type = 1.5072864657000133
+Nombre d'itération = 19992
+
+L = 1 | Répétition 2
+L = 1 | Baseline = 104.87377286100842 | Meilleure inertie = 40.616369805150136
+Inertie moyenne = 41.66224753501211
+Écart-type = 1.76464811780999
+Nombre d'itération = 19664
+
+L = 1 | Répétition 3
+L = 1 | Baseline = 104.87377286100842 | Meilleure inertie = 40.624009577325474
+Inertie moyenne = 41.948370892395445
+Écart-type = 2.2714652020898223
+Nombre d'itération = 21770
+
+L = 1 | Répétition 4
+L = 1 | Baseline = 104.87377286100842 | Meilleure inertie = 40.56944787874098
+Inertie moyenne = 40.59013733352799
+Écart-type = 0.020518325779803736
+Nombre d'itération = 23490
+
+L = 1 | Répétition 5
+L = 1 | Baseline = 104.87377286100842 | Meilleure inertie = 40.56944787874098
+Inertie moyenne = 40.63061836255173
+Écart-type = 0.07336928469939905
+Nombre d'itération = 19765
+
+----Bilan pour L = 1----
+Meilleure inertie = 40.56944787874098
+Moyenne des meilleures inerties = 40.59085171537814
+Écart-type = 0.027012346348100878
+
+L = 10 | Répétition 1
+L = 10 | Baseline = 104.87377286100842 | Meilleure inertie = 40.56944787874098
+Inertie moyenne = 40.65306023475973
+Écart-type = 0.08522969638759896
+Nombre d'itération = 21684
+
+L = 10 | Répétition 2
+L = 10 | Baseline = 104.87377286100842 | Meilleure inertie = 40.622996372388066
+Inertie moyenne = 41.84205372127739
+Écart-type = 2.074823694774099
+Nombre d'itération = 23955
+
+L = 10 | Répétition 3
+L = 10 | Baseline = 104.87377286100842 | Meilleure inertie = 40.574983436933124
+Inertie moyenne = 40.61402366977308
+Écart-type = 0.03470859109608318
+Nombre d'itération = 20163
+
+L = 10 | Répétition 4
+L = 10 | Baseline = 104.87377286100842 | Meilleure inertie = 40.659883208008836
+Inertie moyenne = 40.715426087082186
+Écart-type = 0.08070947109814003
+Nombre d'itération = 21426
+
+L = 10 | Répétition 5
+L = 10 | Baseline = 104.87377286100842 | Meilleure inertie = 40.56944787874098
+Inertie moyenne = 40.787689496130746
+Écart-type = 0.2756278263088132
+Nombre d'itération = 20499
+
+----Bilan pour L = 10----
+Meilleure inertie = 40.56944787874098
+Moyenne des meilleures inerties = 40.5993517549624
+Écart-type = 0.04063687762004737
+
+L = 100 | Répétition 1
+L = 100 | Baseline = 104.87377286100842 | Meilleure inertie = 40.56944787874098
+Inertie moyenne = 40.60993440609914
+Écart-type = 0.04023484380959742
+Nombre d'itération = 21044
+
+L = 100 | Répétition 2
+L = 100 | Baseline = 104.87377286100842 | Meilleure inertie = 40.56944787874098
+Inertie moyenne = 41.58001131492198
+Écart-type = 1.6811440729716678
+Nombre d'itération = 20226
+
+L = 100 | Répétition 3
+L = 100 | Baseline = 104.87377286100842 | Meilleure inertie = 40.576506129034264
+Inertie moyenne = 40.68001121930825
+Écart-type = 0.12138602048469396
+Nombre d'itération = 21703
+
+L = 100 | Répétition 4
+L = 100 | Baseline = 104.87377286100842 | Meilleure inertie = 40.574983436933124
+Inertie moyenne = 40.61686419661861
+Écart-type = 0.03823750052878615
+Nombre d'itération = 20270
+
+L = 100 | Répétition 5
+L = 100 | Baseline = 104.87377286100842 | Meilleure inertie = 40.576506129034264
+Inertie moyenne = 41.262289969188295
+Écart-type = 1.1607392202420976
+Nombre d'itération = 20190
+
+----Bilan pour L = 100----
+Meilleure inertie = 40.56944787874098
+Moyenne des meilleures inerties = 40.57337829049673
+Écart-type = 0.0036414116787141415
+
+L = 1000 | Répétition 1
+L = 1000 | Baseline = 104.87377286100842 | Meilleure inertie = 40.576506129034264
+Inertie moyenne = 41.13093928507325
+Écart-type = 0.9259979778265109
+Nombre d'itération = 20794
+
+L = 1000 | Répétition 2
+L = 1000 | Baseline = 104.87377286100842 | Meilleure inertie = 40.6350353568511
+Inertie moyenne = 40.788179115083786
+Écart-type = 0.23832402934463465
+Nombre d'itération = 20406
+
+L = 1000 | Répétition 3
+L = 1000 | Baseline = 104.87377286100842 | Meilleure inertie = 40.64991275232784
+Inertie moyenne = 40.64991275232784
+Écart-type = 0.0
+Nombre d'itération = 24157
+
+L = 1000 | Répétition 4
+L = 1000 | Baseline = 104.87377286100842 | Meilleure inertie = 40.659883208008836
+Inertie moyenne = 41.1109935481637
+Écart-type = 0.7653762390113776
+Nombre d'itération = 20671
+
+L = 1000 | Répétition 5
+L = 1000 | Baseline = 104.87377286100842 | Meilleure inertie = 40.64991275232784
+Inertie moyenne = 40.66008957342123
+Écart-type = 0.017626771193287285
+Nombre d'itération = 23040
+
+----Bilan pour L = 1000----
+Meilleure inertie = 40.576506129034264
+Moyenne des meilleures inerties = 40.63425003970998
+Écart-type = 0.03347639613695807
+

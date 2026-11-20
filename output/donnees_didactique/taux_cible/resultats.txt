@@ -1,0 +1,105 @@
+taux_cible = 0.5 | Répétition 1
+taux_cible = 0.5 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 1.0517981837719292
+Écart-type = 0.15557967613117937
+Nombre d'itération = 9808
+
+taux_cible = 0.5 | Répétition 2
+taux_cible = 0.5 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 1.0758184972708114
+Écart-type = 0.13628383973662317
+Nombre d'itération = 8773
+
+taux_cible = 0.5 | Répétition 3
+taux_cible = 0.5 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 1.0289914850891628
+Écart-type = 0.09986788775763378
+Nombre d'itération = 12190
+
+taux_cible = 0.5 | Répétition 4
+taux_cible = 0.5 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 0.9542421155279858
+Écart-type = 0.016970587523664662
+Nombre d'itération = 10861
+
+taux_cible = 0.5 | Répétition 5
+taux_cible = 0.5 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9414935594814849
+Inertie moyenne = 1.107266686404632
+Écart-type = 0.18109747842077564
+Nombre d'itération = 10553
+
+----Bilan pour taux_cible = 0.5----
+Meilleure inertie = 0.9406168006684178
+Moyenne des meilleures inerties = 0.9407921524310312
+Écart-type = 0.00039209846117803414
+
+taux_cible = 0.65 | Répétition 1
+taux_cible = 0.65 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 1.3660848446273883
+Écart-type = 0.4535784289809472
+Nombre d'itération = 14780
+
+taux_cible = 0.65 | Répétition 2
+taux_cible = 0.65 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9692915122411769
+Inertie moyenne = 1.2793936999942173
+Écart-type = 0.37701446480300094
+Nombre d'itération = 9073
+
+taux_cible = 0.65 | Répétition 3
+taux_cible = 0.65 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 2.0292667853191877
+Écart-type = 1.0502264186842123
+Nombre d'itération = 13446
+
+taux_cible = 0.65 | Répétition 4
+taux_cible = 0.65 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 1.5833361443206695
+Écart-type = 1.0184203911395098
+Nombre d'itération = 12022
+
+taux_cible = 0.65 | Répétition 5
+taux_cible = 0.65 | Baseline = 8.113638255411155 | Meilleure inertie = 1.1397167758449949
+Inertie moyenne = 1.3075483237634782
+Écart-type = 0.16244688456884948
+Nombre d'itération = 8788
+
+----Bilan pour taux_cible = 0.65----
+Meilleure inertie = 0.9406168006684178
+Moyenne des meilleures inerties = 0.986171738018285
+Écart-type = 0.08672770263062271
+
+taux_cible = 0.8 | Répétition 1
+taux_cible = 0.8 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9727049475710673
+Inertie moyenne = 2.5181898293982123
+Écart-type = 2.371935653392745
+Nombre d'itération = 11884
+
+taux_cible = 0.8 | Répétition 2
+taux_cible = 0.8 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 2.2879475374510534
+Écart-type = 2.332886036490202
+Nombre d'itération = 13401
+
+taux_cible = 0.8 | Répétition 3
+taux_cible = 0.8 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 1.0777709734902288
+Écart-type = 0.1860653460819202
+Nombre d'itération = 14767
+
+taux_cible = 0.8 | Répétition 4
+taux_cible = 0.8 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 1.0646895273258365
+Écart-type = 0.2149002664042546
+Nombre d'itération = 15506
+
+taux_cible = 0.8 | Répétition 5
+taux_cible = 0.8 | Baseline = 8.113638255411155 | Meilleure inertie = 0.9406168006684178
+Inertie moyenne = 1.6773379503436416
+Écart-type = 1.2469733160509002
+Nombre d'itération = 14647
+
+----Bilan pour taux_cible = 0.8----
+Meilleure inertie = 0.9406168006684178
+Moyenne des meilleures inerties = 0.9470344300489477
+Écart-type = 0.01435025554926472
+

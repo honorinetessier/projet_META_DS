@@ -1,0 +1,100 @@
+n_runs = 1 | Répétition 1
+n_runs = 1 | Baseline = 28.950611295873404 | Meilleure inertie = 2.248365164689741
+Inertie moyenne = 2.248365164689741
+Nombre d'itération = 24325
+
+n_runs = 1 | Répétition 2
+n_runs = 1 | Baseline = 28.950611295873404 | Meilleure inertie = 2.248526582245815
+Inertie moyenne = 2.248526582245815
+Nombre d'itération = 21093
+
+n_runs = 1 | Répétition 3
+n_runs = 1 | Baseline = 28.950611295873404 | Meilleure inertie = 2.247007673803953
+Inertie moyenne = 2.247007673803953
+Nombre d'itération = 23906
+
+n_runs = 1 | Répétition 4
+n_runs = 1 | Baseline = 28.950611295873404 | Meilleure inertie = 2.246480734501527
+Inertie moyenne = 2.246480734501527
+Nombre d'itération = 22105
+
+n_runs = 1 | Répétition 5
+n_runs = 1 | Baseline = 28.950611295873404 | Meilleure inertie = 2.245311879390833
+Inertie moyenne = 2.245311879390833
+Nombre d'itération = 22947
+
+----Bilan pour n_runs = 1----
+Meilleure inertie = 2.245311879390833
+Moyenne des meilleures inerties = 2.247138406926374
+Écart-type = 0.0013432974664308313
+
+n_runs = 3 | Répétition 1
+n_runs = 3 | Baseline = 28.950611295873404 | Meilleure inertie = 2.2459270499956823
+Inertie moyenne = 2.2676959367331717
+Écart-type = 0.03677293985146809
+Nombre d'itération = 21525
+
+n_runs = 3 | Répétition 2
+n_runs = 3 | Baseline = 28.950611295873404 | Meilleure inertie = 2.266645907811992
+Inertie moyenne = 2.294764377066109
+Écart-type = 0.024351308689596857
+Nombre d'itération = 23512
+
+n_runs = 3 | Répétition 3
+n_runs = 3 | Baseline = 28.950611295873404 | Meilleure inertie = 2.248365164689741
+Inertie moyenne = 2.254980144334191
+Écart-type = 0.011457480835221396
+Nombre d'itération = 22376
+
+n_runs = 3 | Répétition 4
+n_runs = 3 | Baseline = 28.950611295873404 | Meilleure inertie = 2.245311879390833
+Inertie moyenne = 2.247377747596374
+Écart-type = 0.001789673260722104
+Nombre d'itération = 23609
+
+n_runs = 3 | Répétition 5
+n_runs = 3 | Baseline = 28.950611295873404 | Meilleure inertie = 2.247007673803953
+Inertie moyenne = 2.2806392364259307
+Écart-type = 0.03126589886504195
+Nombre d'itération = 24307
+
+----Bilan pour n_runs = 3----
+Meilleure inertie = 2.245311879390833
+Moyenne des meilleures inerties = 2.25065153513844
+Écart-type = 0.009016066989563738
+
+n_runs = 5 | Répétition 1
+n_runs = 5 | Baseline = 28.950611295873404 | Meilleure inertie = 2.245311879390833
+Inertie moyenne = 2.490033244158324
+Écart-type = 0.5078183617116635
+Nombre d'itération = 22812
+
+n_runs = 5 | Répétition 2
+n_runs = 5 | Baseline = 28.950611295873404 | Meilleure inertie = 2.245311879390833
+Inertie moyenne = 2.2609737110808963
+Écart-type = 0.027020560766336143
+Nombre d'itération = 24180
+
+n_runs = 5 | Répétition 3
+n_runs = 5 | Baseline = 28.950611295873404 | Meilleure inertie = 2.245311879390833
+Inertie moyenne = 2.3254349564044317
+Écart-type = 0.13703111785372868
+Nombre d'itération = 22013
+
+n_runs = 5 | Répétition 4
+n_runs = 5 | Baseline = 28.950611295873404 | Meilleure inertie = 2.2459270499956823
+Inertie moyenne = 2.3203633502292056
+Écart-type = 0.09697531132214338
+Nombre d'itération = 23741
+
+n_runs = 5 | Répétition 5
+n_runs = 5 | Baseline = 28.950611295873404 | Meilleure inertie = 2.247007673803953
+Inertie moyenne = 7.0466137608289445
+Écart-type = 9.770707336682245
+Nombre d'itération = 21641
+
+----Bilan pour n_runs = 5----
+Meilleure inertie = 2.245311879390833
+Moyenne des meilleures inerties = 2.245774072394427
+Écart-type = 0.0007392634344034506
+

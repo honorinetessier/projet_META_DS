@@ -656,7 +656,7 @@ end
 function experimentation_t_init()
     dossier_projet = dirname(@__DIR__)
     config = TOML.parsefile(joinpath(dossier_projet, "config.toml"))
-    config["sa"]["T0_auto"] = true
+    config["sa"]["T0_auto"] = false
 
     #affichage des sorties sur terminal dans un fichier txt 
     dossier_sortie = joinpath(dossier_projet, "output", "t_init")

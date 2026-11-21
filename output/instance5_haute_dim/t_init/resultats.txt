@@ -1,35 +1,35 @@
 t_init | Répétition 1
-t_init = 0.08 | Baseline = 314.3036578746647 | Meilleure inertie = 40.28188015976933
-Inertie moyenne = 40.39755038638132
-Écart-type = 0.19955329774339897
-Nombre d'itération = 23288
+t_init = 0.08 | Baseline = 314.3036578746647 | Meilleure inertie = 40.27036124960028
+Inertie moyenne = 40.39609017007498
+Écart-type = 0.15814067696791864
+Nombre d'itération = 15397
 
 t_init | Répétition 2
-t_init = 0.08 | Baseline = 314.3036578746647 | Meilleure inertie = 40.27710778330588
-Inertie moyenne = 40.29610668994462
-Écart-type = 0.02395413121954977
-Nombre d'itération = 23744
+t_init = 0.08 | Baseline = 314.3036578746647 | Meilleure inertie = 40.27036124960028
+Inertie moyenne = 41.113511323311805
+Écart-type = 0.7311056287601022
+Nombre d'itération = 19256
 
 t_init | Répétition 3
-t_init = 0.08 | Baseline = 314.3036578746647 | Meilleure inertie = 40.27036124960028
-Inertie moyenne = 40.44930590375467
-Écart-type = 0.2445183963557056
-Nombre d'itération = 26319
+t_init = 0.08 | Baseline = 314.3036578746647 | Meilleure inertie = 40.28840405994445
+Inertie moyenne = 41.10605091136396
+Écart-type = 0.7082923498901147
+Nombre d'itération = 16052
 
 t_init | Répétition 4
 t_init = 0.08 | Baseline = 314.3036578746647 | Meilleure inertie = 40.276289924451156
-Inertie moyenne = 40.326180177289054
-Écart-type = 0.043849685644735174
-Nombre d'itération = 29060
+Inertie moyenne = 41.14232284543979
+Écart-type = 1.4616876142178876
+Nombre d'itération = 14883
 
 t_init | Répétition 5
-t_init = 0.08 | Baseline = 314.3036578746647 | Meilleure inertie = 40.27041144996158
-Inertie moyenne = 53.769532991642166
-Écart-type = 23.17859953480874
-Nombre d'itération = 27495
+t_init = 0.08 | Baseline = 314.3036578746647 | Meilleure inertie = 40.28840405994445
+Inertie moyenne = 52.91065983283209
+Écart-type = 20.81545611727441
+Nombre d'itération = 13512
 
 ----Bilan pour t_inir = 0.08----
 Meilleure inertie = 40.27036124960028
-Moyenne des meilleures inerties = 40.27521011341765
-Écart-type = 0.004893753990812859
+Moyenne des meilleures inerties = 40.278764108708124
+Écart-type = 0.009126814748139856
 

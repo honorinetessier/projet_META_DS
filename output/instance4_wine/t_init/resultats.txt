@@ -1,32 +1,32 @@
 t_init | Répétition 1
 t_init = 0.08 | Baseline = 104.52580139060916 | Meilleure inertie = 45.46346481187137
-Inertie moyenne = 45.53650553307273
-Écart-type = 0.07698666416559938
-Nombre d'itération = 13383
+Inertie moyenne = 45.46346481187137
+Écart-type = 0.0
+Nombre d'itération = 4336
 
 t_init | Répétition 2
 t_init = 0.08 | Baseline = 104.52580139060916 | Meilleure inertie = 45.46346481187137
-Inertie moyenne = 45.514905902399995
-Écart-type = 0.04600561067946165
-Nombre d'itération = 13680
+Inertie moyenne = 45.46346481187137
+Écart-type = 0.0
+Nombre d'itération = 3911
 
 t_init | Répétition 3
 t_init = 0.08 | Baseline = 104.52580139060916 | Meilleure inertie = 45.46346481187137
-Inertie moyenne = 45.57245512997165
-Écart-type = 0.10793252046593572
-Nombre d'itération = 12428
+Inertie moyenne = 45.49510479575026
+Écart-type = 0.05480205962890531
+Nombre d'itération = 3915
 
 t_init | Répétition 4
 t_init = 0.08 | Baseline = 104.52580139060916 | Meilleure inertie = 45.46346481187137
-Inertie moyenne = 45.59801819343942
-Écart-type = 0.23305329320606707
-Nombre d'itération = 12757
+Inertie moyenne = 45.46346481187137
+Écart-type = 0.0
+Nombre d'itération = 5463
 
 t_init | Répétition 5
 t_init = 0.08 | Baseline = 104.52580139060916 | Meilleure inertie = 45.46346481187137
-Inertie moyenne = 45.49793277091886
-Écart-type = 0.059700256303451375
-Nombre d'itération = 10993
+Inertie moyenne = 45.48535743533355
+Écart-type = 0.03791913614747262
+Nombre d'itération = 5801
 
 ----Bilan pour t_inir = 0.08----
 Meilleure inertie = 45.46346481187137

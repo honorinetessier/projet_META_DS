@@ -6,6 +6,7 @@
 - `config.toml` : configuration des données et des paramètres du recuit simulé.
 - `data/` : instances à tester.
 - `output/` : résultats des expérimentations et graphiques.
+- `note_projet_META/` : notes concernant la compréhension du sujet et la conception (pseudocodes)
 
 
 ## Exécution
